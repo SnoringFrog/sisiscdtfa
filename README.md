@@ -25,3 +25,4 @@ If you are a Ludum Dare participant
 ===================================
 Please rate my game! Leave a comment and I'll do my best to get to your game as well.
 
+http://www.ludumdare.com/compo/ludum-dare-30/?action=preview&uid=20952
