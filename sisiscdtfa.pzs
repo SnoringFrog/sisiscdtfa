@@ -1,0 +1,598 @@
+title Super Space-Internet Saving Company Dlx. Task Force Adventure
+(Super Interplanetary Space-Internet Saving Company Deluxe Task Force Adventure)
+author SnoringFrog
+homepage http://www.ludumdare.com/compo/ludum-dare-30/?action=preview&uid=20952
+
+========
+OBJECTS
+========
+
+Background 
+DarkBlue  
+
+Wall 
+DarkGrey
+
+Player
+Gray LightBlue Orange
+.000.
+.111.
+.010.
+.000.
+.222.
+
+Terminal_A
+Blue
+.000.
+00.00
+0...0
+00.00
+.000.
+
+Message_A
+Blue
+.....
+..0..
+.000.
+..0..
+.....
+
+Terminal_B
+LightGreen
+.000.
+00.00
+0.0.0
+00.00
+.000.
+
+Message_B
+LightGreen
+.....
+..0..
+.0.0.
+..0..
+.....
+
+Terminal_C
+Yellow
+.000.
+00000
+0...0
+00.00
+.000.
+
+Message_C
+Yellow
+.....
+.....
+.000.
+..0..
+.....
+
+Terminal_D
+Red
+.000.
+00.00
+0...0
+00000
+.000.
+
+Message_D
+Red
+.....
+..0..
+.000.
+.....
+.....
+
+Virus
+Pink Black
+.000.
+.101.
+.010.
+0.0.0
+0.0.0
+
+VirusLos (line of sight)
+Transparent
+
+Firewall
+Orange Red Yellow
+..2..
+.202.
+20102
+01110
+11111
+
+AntiVirus
+Black Pink
+.000.
+.101.
+.010.
+0.0.0
+0.0.0
+
+
+=======
+LEGEND
+=======
+
+. = Background
+# = Wall
+P = Player
+
+AnyTerminal = Terminal_A or Terminal_B or Terminal_C or Terminal_D
+A = Terminal_A
+B = Terminal_B
+C = Terminal_C
+D = Terminal_D
+
+AnyMessage = Message_A or Message_B or Message_C or Message_D
+1 = Message_A
+2 = Message_B
+3 = Message_C
+4 = Message_D
+
++ = Message_B and Terminal_A
+- = Message_A and Terminal_B
+
+AnyItem = Firewall or Antivirus
+F = Firewall
+@ = AntiVirus
+
+! = Virus
+
+Opaque = Wall or Virus
+
+=======
+SOUNDS
+=======
+Player move 47043907
+Virus move 73862107
+
+EndLevel 19222308
+StartLevel 70326500
+
+SFX0 18019107 (message moved)
+SFX1 17076304 (message infected)
+SFX2 28082509 (message at terminal)
+SFX3 91293303 (antivirus gets virus)
+SFX4 10549903 (message left terminal) (unused)
+
+
+================
+COLLISIONLAYERS
+================
+
+Background
+VirusLoS
+Terminal_A, Terminal_B, Terminal_C, Terminal_D
+Player, Wall, Message_A, Message_B, Message_C, Message_D, Virus, Firewall, 
+Antivirus
+
+======
+RULES     
+======     
+
+[ >  Player | AnyMessage ] -> [  >  Player | > AnyMessage] sfx0
+[ >  Player | AnyItem ] -> [  >  Player | > AnyItem]
+
+
+(Viruses cannot see through Opaque objects and they chase messages that they can see)
+(Things that are totally features and not bugs:
+	-The way viruses display an odd hive-mind effect when they're lined up with each other in view of a message
+    -The "confusion" viruses exhibit when in line with two messages of the same color
+    -The entire concept of message colors have various levels of importance to the viruses
+)
+[Virus | ... | Message_A] -> [Virus > VirusLoS | ... | Message_A]
+[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
+[ > VirusLos | Opaque] -> [ | Opaque]
+[ Virus | ... | > VirusLos |Message_A] -> [ > Virus | ... | | Message_A]
+
+[Virus | ... | Message_B] -> [Virus > VirusLoS | ... | Message_B]
+[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
+[ > VirusLos | Opaque] -> [ | Opaque]
+[ Virus | ... | > VirusLos |Message_B] -> [ > Virus | ... | | Message_B]
+
+[Virus | ... | Message_C] -> [Virus > VirusLoS | ... | Message_C]
+[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
+[ > VirusLos | Opaque] -> [ | Opaque]
+[ Virus | ... | > VirusLos |Message_C] -> [ > Virus | ... | | Message_C]
+
+[Virus | ... | Message_D] -> [Virus > VirusLoS | ... | Message_D]
+[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
+[ > VirusLos | Opaque] -> [ | Opaque]
+[ Virus | ... | > VirusLos |Message_D] -> [ > Virus | ... | | Message_D]
+
+(Antivirus destroys virus)
+late [Antivirus Virus] -> [] SFX3
+
+(Virus consumes message)
+late [AnyMessage | Virus ] -> [ Virus | Virus ] SFX1 
+
+(Other sounds)
+[ > Message_A | Terminal_A] -> [ > Message_A | Terminal_A] SFX2
+[ > Message_B | Terminal_B] -> [ > Message_B | Terminal_B] SFX2
+[ > Message_C | Terminal_C] -> [ > Message_C | Terminal_C] SFX2
+[ > Message_D | Terminal_D] -> [ > Message_D | Terminal_D] SFX2
+
+
+==============
+WINCONDITIONS
+==============
+
+All Terminal_A on Message_A   
+All Terminal_B on Message_B 
+All Terminal_C on Message_C 
+All Terminal_D on Message_D 
+
+=======     
+LEVELS
+=======
+(testing level)
+(
+##################
+#a..............b#
+#.......@........#
+#..4....F.......!#
+#................#
+#.p..3..c...2....#
+#................#
+#................#
+#................#
+#...1............#
+#................#
+#................#
+#........d.......#
+##################
+)
+
+message We've got major outages across the 'verse!
+message You're our only remaining tech, so we need you ensure the messages reach the proper terminals.
+message That way, we can keep all the worlds connected to the Galactic Interweb where the cats can keep them from starting wars.
+message Now, go, push those messages into the terminals!
+
+(Phase 1 - Messages Only)
+
+#########
+#.......#
+#p..1..A#
+#.......#
+#########
+
+message Sometimes, you're gonna have multiple messages. You know your colors, or at least your shapes, right? 
+#########
+#...1..A#
+#p......#
+#...2..B#
+#########
+
+######
+##d###
+##4b##
+#c32##
+##p1a#
+######
+
+message If you screw up, tap R reset your time loop.
+message Don't ask me why we can't just reset to before this problem happened.
+###############
+#...........#A#
+#.B......#..#.#
+#...........3.#
+#.#p...1.#.#..#
+#........#2#..#
+#.C......#.#..#
+#.............#
+###############
+
+message As long as you get one message to each terminal, that should be good enough, right?
+##################
+#................#
+#........#...#.1.#
+#......a.#...#...#
+#..###...#....#..#
+#....##1##..#1.#.#
+#.....###........#
+#..#.............#
+#.##p............#
+#.......#######..#
+#...#.#.#.....##.#
+#.1.#.##...1...###
+#...#............#
+##################
+
+(Multiple terminals, some extra messages)
+###############
+#b#...#...#...#
+#.#.p...d.#.2.#
+#.#.1.#...#...#
+#.....#...#...#
+#.#.#.#.#.#.#.#
+#.#.....#.....#
+#...#...#...#.#
+#.3.#.4...+.#.#
+#...#...#...#c#
+###############
+
+message I'd fly out and help you, but you're doing just fine.
+message Besides, I got this carton of potato salad that needs eatin'.
+######################
+#...........##########
+#...###.............##
+#..#...#......##.##.##
+#.............#...#..#
+#..##-##......#.+.#..#
+#.............#...#..#
+#..#...#......##.##..#
+#...###..............#
+#........p..####.###.#
+#...........#........#
+#..#.#.#....#.#####..#
+#.#..#..#...#.#...#..#
+#.#..-..#...#...+....#
+#.#..#..#...#.#...#..#
+#..#.#.#....#.#####..#
+#...................##
+#...................##
+######################
+
+
+(Phase 2 - Viruses)
+message Are those viruses?! You probably shouldn't let those reach the messages. 
+message 
+################
+#........!.....#
+#..............#
+#!.p.1........A#
+#..............#
+#.....!.....!..#
+################
+
+message Viruses have a nasty way of replicating if you let 'em do the nasty with a message, so avoid that.
+#####################
+#...!...........!...#
+#...................#
+#.......##.##.......#
+#......#.....#......#
+#......#.....#......#
+#......#..a..#......#
+#......#.....#......#
+#.......#...#.......#
+#.......#444#.......#
+#.......#ddd#.......#
+#.....#..###..#.....#
+#......#.....#......#
+#...1...#####...1...#
+#......#.....#......#
+#.....#.......#.....#
+#.........p.........#
+#...................#
+#####################
+
+#####################
+##.....#.....#.....##
+##...........!.....##
+##..a..#.....#..2..##
+##.....#..3..#.....##
+##...........#.....##
+###.#####...###.#.###
+##.....#.....#.....##
+##.4.........#..!..##
+##.....#..b..#.....##
+##.......!.........##
+##.....#.....#.....##
+#####.###.######.####
+##.....#...........##
+##...........#.....##
+##..1........#..c..##
+##.....#..p........##
+##.....#.....#.....##
+#####################
+
+message By the way, if you need to take a short break, you can hit X to stand around like a lazy bum. Careful you don't wait too long and let them viruses catch up!
+#################
+#...##.......####
+#............#..#
+#...#...###!....#
+#....#...b...#!.#
+#.p3..#.###..##c#
+#....#...2...##.#
+#...#!...#......#
+#............#..#
+#...##.......####
+#################
+
+
+#################
+#...............#
+#...3..ada..3...#
+#...............#
+#...............#
+#.4.....!.....4.#
+#...............#
+#...............#
+#......1p1......#
+#...............#
+#################
+
+
+(Phase 3 - Firewalls and Antivirus)
+message The little buggers can see right through firewalls, but that doesn't stop them from getting hung up on them. 
+#################
+###!#!#!#!#!#!###
+###.#.#.#.#.#.###
+##fffffffffffff##
+#p3............c#
+##fffffffffffff##
+##.#.#.#.#.#.#.##
+##!#!#!#!#!#!#!##
+#################
+
+message If you come across any of those fancy antivirus thingamajigs, you might be able use them to get ride of some viruses.
+################
+################
+#..............#
+#p......2@..!.b#
+#..............#
+################
+################
+
+message Feel free to move the firewalls and antiviruses around, if you think it will help you any.
+message I won't tell nobody. I promise.
+##################
+#a..............b#
+#.......@....!...#
+#..4....f.......!#
+#................#
+#.p..3..c...2....#
+#................#
+#................#
+#.!..............#
+#................#
+#.............1..#
+#....!...........#
+#........d.......#
+##################
+
+###################
+#.................#
+#.2.............!c#
+#.....f...........#
+#.................#
+#.3..p..........!d#
+#.................#
+#.....@...........#
+#.4.............!b#
+#.................#
+###################
+
+message Viruses seem to be chasing certain messages first.
+message You got any idea which ones they seem to like?
+###################
+#d...............c#
+#..1...........!..#
+#...#........#....#
+#........p........#
+#......#..........#
+##......#..f....#.#
+#..........#.....3#
+#............4....#
+#.................#
+#.....2...........#
+#a...............b#
+###################
+
+message I don't have a clue what those things want. 
+message Maybe there's some way to get them confused. I don't know.
+message Good luck with that.
+
+####################
+#..#################
+#................!a#
+#..#################
+#..1...............#
+#..#...............#
+#.................4#
+#.2.!........1..!..#
+#..!...............#
+#3.................#
+#...!.............3#
+#....!......p.@....#
+#..........3..4....#
+#..2...............#
+#.....1...1........#
+#..................#
+####################
+
+#########
+##.....##
+.#..-..#.
+##.....##
+##.....##
+.#!....#.
+##.....##
+##.....##
+.#....!#.
+##.....##
+##.....##
+.#!....#.
+##.....##
+##.....##
+.#....!#.
+##.....##
+##.....##
+.#!....#.
+##.....##
+##.....##
+.#..f.!#.
+##.....##
+##.....##
+.#..+..#.
+##..p..##
+#########
+
+#####################
+#...................#
+#..!b!...!b!...!b!..#
+#...!..!..!..!..!...#
+.#.................#.
+##.#.......@...###.##
+##.#..........#....##
+##.#..@......#.....##
+.#..#..@.....#.....#.
+.#...###....@...#..#.
+##.2........@...#..##
+##..........####...##
+##...#..2..#.......##
+.#.......@..2..2...#.
+#...2.....2.........#
+#........p....2.....#
+#...................#
+#####################
+
+(difficult. final level?)
+####################
+#........#.........#
+#..##1....!........#
+#..#b.....f.#....1.#
+#............#.2#b##
+#.....@.........####
+#..........#......!#
+#......p..#c.......#
+#!...3#.2....#.....#
+#.....d#.....2.....#
+##....#...##...##3.#
+#a........4....a#..#
+##.............##..#
+####################
+
+message Well, I'm just about done with my potato salad, so I'll join you--oh, you're at the last location? Well, nevermind then.
+####################
+#.................!#
+#!.................#
+#.#..!.###.........#
+#.#....#.d#.....@..#
+#.#.4..#..#........#
+#.#....#..#...!....#
+#.#c...#.!#........#
+#.####.##.4........#
+#.....2..........p.#
+#...###...##.......#
+#.....b#1#a.#......#
+#...###!.#..#......#
+#.....d#.#3.#...f..#
+#...###....#.......#
+#.................!#
+#!.................#
+####################
+
+message Um...good job out there and stuff.
+message All those worlds would be pretty darn miffed with us if we hadn't fixed their connections so quick-like.
+message Go take a vacation, you've earned it. I'll see you later, space cowboy.
+
+message THE END
+
+message THANKS FOR PLAYING!
+message Super Interplanetary Space-Internet Saving Company Deluxe Task Force Adventure was made by SnoringFrog for Ludum Dare 30 in under 48 hours.
+message Feel free to fork it at github.com/snoringfrog/sisiscdtfa or message me about it on Twitter @SnoringFrog if you have comments/suggestions
