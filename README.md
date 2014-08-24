@@ -19,3 +19,9 @@ Instructions
 Get the messages to the terminals and keep them away from the viruses.
 
 Note: I'll come back and update this with some images eventually.
+
+
+If you are a Ludum Dare participant
+===================================
+Please rate my game! Leave a comment and I'll do my best to get to your game as well.
+
