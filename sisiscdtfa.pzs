@@ -1,7 +1,7 @@
 title Super Space-Internet Saving Company Dlx. Task Force Adventure
 (Super Interplanetary Space-Internet Saving Company Deluxe Task Force Adventure)
 author SnoringFrog
-homepage www.github.com/snoringfrog/sisiscdtf
+homepage http://www.ludumdare.com/compo/ludum-dare-30/?action=preview&uid=20952
 
 ========
 OBJECTS
@@ -93,8 +93,28 @@ Pink Black
 0.0.0
 0.0.0
 
-VirusLos (line of sight)
-Transparent
+VirusVertLoS (line of sight)
+transparent
+(
+Red 
+..0..
+..0..
+..0..
+..0..
+..0..
+)
+
+VirusHorizLoS
+transparent
+(
+Red
+.....
+.....
+00000
+.....
+.....
+)
+
 
 Firewall
 Orange Red Yellow
@@ -165,9 +185,9 @@ COLLISIONLAYERS
 ================
 
 Background
-VirusLoS
+VirusVertLoS, VirusHorizLoS
 Terminal_A, Terminal_B, Terminal_C, Terminal_D
-Player, Wall, Message_A, Message_B, Message_C, Message_D, Virus, Firewall, 
+Player, Wall, Message_A, Message_B, Message_C, Message_D, Virus, Firewall
 Antivirus
 
 ======
@@ -184,28 +204,46 @@ RULES
     -The "confusion" viruses exhibit when in line with two messages of the same color
     -The entire concept of message colors have various levels of importance to the viruses
 )
-[Virus | ... | Message_A] -> [Virus > VirusLoS | ... | Message_A]
-[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
-[ > VirusLos | Opaque] -> [ | Opaque]
-[ Virus | ... | > VirusLos |Message_A] -> [ > Virus | ... | | Message_A]
 
-[Virus | ... | Message_B] -> [Virus > VirusLoS | ... | Message_B]
-[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
-[ > VirusLos | Opaque] -> [ | Opaque]
-[ Virus | ... | > VirusLos |Message_B] -> [ > Virus | ... | | Message_B]
+(Generate line of sight)
+HORIZONTAL [Virus | no Opaque no VirusHorizLos] -> [Virus | VirusHorizLos]
+HORIZONTAL [VirusHorizLos | no Opaque no VirusHorizLos] -> [VirusHorizLos | VirusHorizLos]
 
-[Virus | ... | Message_C] -> [Virus > VirusLoS | ... | Message_C]
-[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
-[ > VirusLos | Opaque] -> [ | Opaque]
-[ Virus | ... | > VirusLos |Message_C] -> [ > Virus | ... | | Message_C]
+VERTICAL [Virus | no Opaque no VirusVertLoS] -> [Virus | VirusVertLoS]
+VERTICAL [VirusVertLoS | no Opaque no VirusVertLoS] -> [VirusVertLoS | VirusVertLoS]
 
-[Virus | ... | Message_D] -> [Virus > VirusLoS | ... | Message_D]
-[ > VirusLos | no Opaque no AnyMessage ] -> [ | > VirusLoS ]
-[ > VirusLos | Opaque] -> [ | Opaque]
-[ Virus | ... | > VirusLos |Message_D] -> [ > Virus | ... | | Message_D]
+
+(Remove LoS when Virus leaves)
+[ < Virus | VirusHorizLoS] -> [  | ]
+late HORIZONTAL [ VirusHorizLoS | no Opaque no Virus No VirusHorizLoS] -> [ | ]
+
+[ < Virus | VirusVertLoS] -> [  | ]
+late VERTICAL [ VirusVertLoS | no Opaque no Virus No VirusVertLoS] -> [ | ]
+
+(Fixes bug where viruses stop one square away from messages)
+[Virus | no Opaque | AnyMessage] -> [> Virus | | AnyMessage]
+
+(Pursue visible messages)
+VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_A] -> [ > Virus || ... | | Message_A]
+HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_A] -> [ > Virus || ... | | Message_A]
+
+VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_B] -> [ > Virus || ... | | Message_B]
+HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_B] -> [ > Virus || ... | | Message_B]
+
+VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_C] -> [ > Virus || ... | | Message_C]
+HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_C] -> [ > Virus || ... | | Message_C]
+
+VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_D] -> [ > Virus || ... | | Message_D]
+HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_D] -> [ > Virus || ... | | Message_D]
+
 
 (Antivirus destroys virus)
 late [Antivirus Virus] -> [] SFX3
+
+(LoS bug fix I hope isn't breaking other things)
+late [VirusVertLoS | no Opaque no Virus no VirusVertLoS] -> [|]
+late [VirusHorizLoS | no Opaque no Virus no VirusHorizLoS] -> [|]
+
 
 (Virus consumes message)
 late [AnyMessage | Virus ] -> [ Virus | Virus ] SFX1 
