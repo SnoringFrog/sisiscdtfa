@@ -220,22 +220,25 @@ late HORIZONTAL [ VirusHorizLoS | no Opaque no Virus No VirusHorizLoS] -> [ | ]
 [ < Virus | VirusVertLoS] -> [  | ]
 late VERTICAL [ VirusVertLoS | no Opaque no Virus No VirusVertLoS] -> [ | ]
 
-(Fixes bug where viruses stop one square away from messages)
+(Fixes bug where viruses stop one square away from messages - also duplicated but per message type below to prevent further bug with virus torn between two messages and never reaching either)
 [Virus | no Opaque | AnyMessage] -> [> Virus | | AnyMessage]
 
 (Pursue visible messages)
 VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_A] -> [ > Virus || ... | | Message_A]
 HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_A] -> [ > Virus || ... | | Message_A]
+[Virus | no Opaque | Message_A] -> [> Virus | | Message_A]
 
 VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_B] -> [ > Virus || ... | | Message_B]
 HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_B] -> [ > Virus || ... | | Message_B]
+[Virus | no Opaque | Message_B] -> [> Virus | | Message_B]
 
 VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_C] -> [ > Virus || ... | | Message_C]
 HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_C] -> [ > Virus || ... | | Message_C]
+[Virus | no Opaque | Message_C] -> [> Virus | | Message_C]
 
 VERTICAL [Virus | no Virus | ... | VirusVertLoS | Message_D] -> [ > Virus || ... | | Message_D]
 HORIZONTAL [Virus | no Virus | ... | VirusHorizLoS | Message_D] -> [ > Virus || ... | | Message_D]
-
+[Virus | no Opaque | Message_D] -> [> Virus | | Message_D]
 
 (Antivirus destroys virus)
 late [Antivirus Virus] -> [] SFX3
@@ -267,168 +270,10 @@ All Terminal_D on Message_D
 =======     
 LEVELS
 =======
-(testing level)
+
+
+message Ok Micah this should pick up where you left off
 (
-##################
-#a..............b#
-#.......@........#
-#..4....F.......!#
-#................#
-#.p..3..c...2....#
-#................#
-#................#
-#................#
-#...1............#
-#................#
-#................#
-#........d.......#
-##################
-)
-
-message We've got major outages across the 'verse!
-message You're our only remaining tech, so we need you ensure the messages reach the proper terminals.
-message That way, we can keep all the worlds connected to the Galactic Interweb where the cats can keep them from starting wars.
-message Now, go, push those messages into the terminals!
-
-(Phase 1 - Messages Only)
-
-#########
-#.......#
-#p..1..A#
-#.......#
-#########
-
-message Sometimes, you're gonna have multiple messages. You know your colors, or at least your shapes, right? 
-#########
-#...1..A#
-#p......#
-#...2..B#
-#########
-
-######
-##d###
-##4b##
-#c32##
-##p1a#
-######
-
-message If you screw up, tap R reset your time loop.
-message Don't ask me why we can't just reset to before this problem happened.
-###############
-#...........#A#
-#.B......#..#.#
-#...........3.#
-#.#p...1.#.#..#
-#........#2#..#
-#.C......#.#..#
-#.............#
-###############
-
-message As long as you get one message to each terminal, that should be good enough, right?
-##################
-#................#
-#........#...#.1.#
-#......a.#...#...#
-#..###...#....#..#
-#....##1##..#1.#.#
-#.....###........#
-#..#.............#
-#.##p............#
-#.......#######..#
-#...#.#.#.....##.#
-#.1.#.##...1...###
-#...#............#
-##################
-
-(Multiple terminals, some extra messages)
-###############
-#b#...#...#...#
-#.#.p...d.#.2.#
-#.#.1.#...#...#
-#.....#...#...#
-#.#.#.#.#.#.#.#
-#.#.....#.....#
-#...#...#...#.#
-#.3.#.4...+.#.#
-#...#...#...#c#
-###############
-
-message I'd fly out and help you, but you're doing just fine.
-message Besides, I got this carton of potato salad that needs eatin'.
-######################
-#...........##########
-#...###.............##
-#..#...#......##.##.##
-#.............#...#..#
-#..##-##......#.+.#..#
-#.............#...#..#
-#..#...#......##.##..#
-#...###..............#
-#........p..####.###.#
-#...........#........#
-#..#.#.#....#.#####..#
-#.#..#..#...#.#...#..#
-#.#..-..#...#...+....#
-#.#..#..#...#.#...#..#
-#..#.#.#....#.#####..#
-#...................##
-#...................##
-######################
-
-
-(Phase 2 - Viruses)
-message Are those viruses?! You probably shouldn't let those reach the messages. 
-message 
-################
-#........!.....#
-#..............#
-#!.p.1........A#
-#..............#
-#.....!.....!..#
-################
-
-message Viruses have a nasty way of replicating if you let 'em do the nasty with a message, so avoid that.
-#####################
-#...!...........!...#
-#...................#
-#.......##.##.......#
-#......#.....#......#
-#......#.....#......#
-#......#..a..#......#
-#......#.....#......#
-#.......#...#.......#
-#.......#444#.......#
-#.......#ddd#.......#
-#.....#..###..#.....#
-#......#.....#......#
-#...1...#####...1...#
-#......#.....#......#
-#.....#.......#.....#
-#.........p.........#
-#...................#
-#####################
-
-#####################
-##.....#.....#.....##
-##...........!.....##
-##..a..#.....#..2..##
-##.....#..3..#.....##
-##...........#.....##
-###.#####...###.#.###
-##.....#.....#.....##
-##.4.........#..!..##
-##.....#..b..#.....##
-##.......!.........##
-##.....#.....#.....##
-#####.###.######.####
-##.....#...........##
-##...........#.....##
-##..1........#..c..##
-##.....#..p........##
-##.....#.....#.....##
-#####################
-
-message By the way, if you need to take a short break, you can hit X to stand around like a lazy bum. Careful you don't wait too long and let them viruses catch up!
 #################
 #...##.......####
 #............#..#
@@ -440,12 +285,12 @@ message By the way, if you need to take a short break, you can hit X to stand ar
 #............#..#
 #...##.......####
 #################
-
+)
 
 #################
 #...............#
 #...3..ada..3...#
-#...............#
+#.......2.......#
 #...............#
 #.4.....!.....4.#
 #...............#
@@ -505,8 +350,6 @@ message I won't tell nobody. I promise.
 #.................#
 ###################
 
-message Viruses seem to be chasing certain messages first.
-message You got any idea which ones they seem to like?
 ###################
 #d...............c#
 #..1...........!..#
