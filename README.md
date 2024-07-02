@@ -11,6 +11,8 @@ Movement - arrow keys
 
 Wait - X
 
+Undo - Z
+
 Restart - R
 
 
